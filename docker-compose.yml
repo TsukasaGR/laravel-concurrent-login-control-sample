@@ -1,0 +1,34 @@
+version: '2'
+services:
+  laravel-concurrent-login-control-sample:
+    container_name: laravel-concurrent-login-control-sample
+    build: ./docker-compose/app
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - app_network
+    volumes:
+      - ./:/var/www/html
+      # ログ出力を同期するならコメントアウトを外す
+      # - ./docker-compose/labrador/log/nginx:/var/log/nginx
+      # - ./docker-compose/labrador/log/php-fpm:/var/log/php-fpm
+    environment:
+      TZ: "Asia/Tokyo"
+    command: /sbin/init
+    privileged: true
+  laravel-concurrent-login-control-sample-db:
+    container_name: laravel-concurrent-login-control-sample-db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: "Asia/Tokyo"
+    ports:
+      - 3306:3306
+    networks:
+      - app_network
+    volumes:
+      - ./docker-compose/db:/var/lib/mysql
+    privileged: true
+networks:
+  app_network:
